@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">InventoryStore</string>
+    <string name="inventory">Inventory</string>
+    <string name="empty_view_title_text">The warehouse is empty</string>
+    <string name="empty_view_subtitle_text">Start by adding items</string>
+    <string name="delete_all">Delete all items</string>
+    <string name="sell">Sell</string>
+    <string name="add">Add</string>
+    <string name="price">\u20B9</string>
+    <string name="stock">Stock: </string>
+    <string name="sold">Quantity Sold: </string>
+    <string name="order">Quantity to order: </string>
+    <string name="sell_string">Sell</string>
+    <string name="name">Item name: </string>
+    <string name="price_heading">Price: </string>
+    <string name="action_save">Save</string>
+    <string name="action_delete">Delete</string>
+    <string name="hint_price">Price of product</string>
+    <string name="hint_name">Name of product</string>
+    <string name="add_item">Add an Item</string>
+    <string name="edit_item">Edit an Item</string>
+    <string name="name_error">Name of Item cannot be empty</string>
+    <string name="price_error">Price of Item cannot be empty or 0</string>
+    <string name="failed_insert">Failed to add new Item</string>
+    <string name="success_insert">New Item was added to Inventory</string>
+    <string name="failed_update">Failed to update the item</string>
+    <string name="success_update">Item updated in inventory successfully</string>
+    <string name="delete1_confirmation">Delete this Item?</string>
+    <string name="confirmation_yes">Yes</string>
+    <string name="confirmation_no">No</string>
+    <string name="delete1_success">The item was deleted</string>
+    <string name="failed_delete">Failed to delete the item</string>
+    <string name="unsaved_changes">Unsaved Changes</string>
+    <string name="keep">Keep editing</string>
+    <string name="discard">Discard</string>
+</resources>
