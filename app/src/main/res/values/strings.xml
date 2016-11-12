@@ -10,7 +10,7 @@
     <string name="stock">Stock: </string>
     <string name="sold">Quantity Sold: </string>
     <string name="order">Quantity to order: </string>
-    <string name="sell_string">Sell</string>
+    <string name="order_string">Order</string>
     <string name="name">Item name: </string>
     <string name="price_heading">Price: </string>
     <string name="action_save">Save</string>
@@ -33,4 +33,9 @@
     <string name="unsaved_changes">Unsaved Changes</string>
     <string name="keep">Keep editing</string>
     <string name="discard">Discard</string>
+    <string name="failed_order">Failed to order the stock</string>
+    <string name="success_order">Order successfully updated</string>
+    <string name="sold_success">Item Sold</string>
+    <string name="sold_failed">Item selling failed</string>
+    <string name="out_of_stock">Stock finished, Order more stock</string>
 </resources>

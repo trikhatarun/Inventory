@@ -3,6 +3,7 @@ package com.android.inventorystore;
 import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,11 +14,13 @@ import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.inventorystore.data.ItemContract.ItemEntry;
@@ -27,13 +30,20 @@ import butterknife.ButterKnife;
 
 public class EditorActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    private final int EXISTING_PET_LOADER = 1;
     @BindView(R.id.name_edit)
     EditText nameField;
     @BindView(R.id.price_input)
     EditText priceField;
-
+    @BindView(R.id.stock)
+    TextView stock;
+    @BindView(R.id.sell_button_editor)
+    TextView sellButton;
+    @BindView(R.id.add_button_editor)
+    TextView addButton;
     Uri mCurrentItemUri;
     private boolean hasItemChanged = false;
+    private int currentStock;
 
     private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
         @Override
@@ -58,10 +68,61 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             setTitle(getString(R.string.add_item));
         } else {
             setTitle(getString(R.string.edit_item));
+            getLoaderManager().initLoader(EXISTING_PET_LOADER, null, this);
         }
 
         nameField.setOnTouchListener(mTouchListener);
         priceField.setOnTouchListener(mTouchListener);
+
+        final Context context = EditorActivity.this;
+
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LayoutInflater li = LayoutInflater.from(context);
+                View promptView = li.inflate(R.layout.prompt_view, null);
+                TextView headingPrompt = (TextView) promptView.findViewById(R.id.heading_prompt);
+                headingPrompt.setText(getString(R.string.order));
+
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+                alertDialogBuilder.setView(promptView);
+
+                final EditText userInput = (EditText) promptView.findViewById(R.id.input);
+
+                alertDialogBuilder.setCancelable(false).setPositiveButton(context.getText(R.string.order_string), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Integer quantityAdded = Integer.parseInt(userInput.getText().toString().trim());
+                        ContentValues values = new ContentValues();
+                        values.put(ItemEntry.COLUMN_ITEM_STOCK, currentStock + quantityAdded);
+                        int rowsAffected = context.getContentResolver().update(mCurrentItemUri, values, null, null);
+                        if (rowsAffected == 0) {
+                            Toast.makeText(context, context.getString(R.string.failed_order), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(context, context.getString(R.string.success_order), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+                alertDialogBuilder.show();
+            }
+        });
+        sellButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ContentValues values = new ContentValues();
+                if (currentStock > 0) {
+                    values.put(ItemEntry.COLUMN_ITEM_STOCK, currentStock - 1);
+                    int rowsAffected = context.getContentResolver().update(mCurrentItemUri, values, null, null);
+                    if (rowsAffected == 0) {
+                        Toast.makeText(context, context.getString(R.string.sold_failed), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(context, context.getString(R.string.sold_success), Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(context, context.getString(R.string.out_of_stock), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     @Override
@@ -83,8 +144,10 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_save:
-                saveItem();
-                finish();
+                boolean confirmation = saveItem();
+                if (confirmation) {
+                    finish();
+                }
                 return true;
             case R.id.action_delete:
                 showConfirmationDialog();
@@ -141,7 +204,8 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         String[] projection = {
                 ItemEntry._ID,
                 ItemEntry.COLUMN_ITEM_NAME,
-                ItemEntry.COLUMN_ITEM_PRICE
+                ItemEntry.COLUMN_ITEM_PRICE,
+                ItemEntry.COLUMN_ITEM_STOCK
         };
         return new CursorLoader(this, mCurrentItemUri, projection, null, null, null);
     }
@@ -154,6 +218,11 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         if (cursor.moveToFirst()) {
             nameField.setText(cursor.getString(cursor.getColumnIndex(ItemEntry.COLUMN_ITEM_NAME)));
             priceField.setText(cursor.getString(cursor.getColumnIndex(ItemEntry.COLUMN_ITEM_PRICE)));
+
+            String stockString = cursor.getString(cursor.getColumnIndex(ItemEntry.COLUMN_ITEM_STOCK));
+            stock.setText(stockString);
+
+            currentStock = Integer.parseInt(stockString);
         }
     }
 
@@ -161,23 +230,25 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     public void onLoaderReset(Loader<Cursor> loader) {
         nameField.setText("");
         priceField.setText("");
+        stock.setText("");
     }
 
-    private void saveItem() {
+    private boolean saveItem() {
         String nameString = nameField.getText().toString().trim();
         String priceString = priceField.getText().toString().trim();
 
         if (TextUtils.isEmpty(nameString)) {
             nameField.setError(getString(R.string.name_error));
-            return;
+            return false;
         }
         if (TextUtils.isEmpty(priceString)) {
             priceField.setError(getString(R.string.price_error));
-            return;
+            return false;
         } else {
             int price = Integer.parseInt(priceString);
             if (price == 0) {
                 priceField.setError(getString(R.string.price_error));
+                return false;
             } else {
                 ContentValues values = new ContentValues();
                 values.put(ItemEntry.COLUMN_ITEM_NAME, nameString);
@@ -194,6 +265,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                     else {
                         Toast.makeText(this, getString(R.string.success_insert), Toast.LENGTH_SHORT).show();
                     }
+                    return true;
                 }
                 //If item is previously available, use update function
                 else {
@@ -204,6 +276,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                         Toast.makeText(this, getString(R.string.failed_update), Toast.LENGTH_SHORT).show();
                     } else
                         Toast.makeText(this, getString(R.string.success_update), Toast.LENGTH_SHORT).show();
+                    return true;
                 }
             }
         }
@@ -226,6 +299,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 }
             }
         });
+        builder.show();
     }
 
     private void deleteItem() {

@@ -168,7 +168,7 @@ public class ItemProvider extends ContentProvider {
         }
         if (values.containsKey(ItemEntry.COLUMN_ITEM_STOCK)) {
             Integer stock = values.getAsInteger(ItemEntry.COLUMN_ITEM_STOCK);
-            if (stock == null || stock <= 0) {
+            if (stock == null || stock < 0) {
                 throw new IllegalArgumentException("Item requires valid stock");
             }
         }
