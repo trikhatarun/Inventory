@@ -69,10 +69,12 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/stockPanel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="35dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
 
         <TextView
             style="@style/Base.TextAppearance.AppCompat.Medium"
@@ -92,8 +94,10 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/buttonPanel"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:visibility="gone">
 
         <Button
             android:id="@+id/sell_button_editor"

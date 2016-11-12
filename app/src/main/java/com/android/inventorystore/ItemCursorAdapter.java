@@ -79,15 +79,20 @@ public class ItemCursorAdapter extends CursorAdapter {
                 alertDialogBuilder.setCancelable(false).setPositiveButton(context.getText(R.string.order_string), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Integer quantityAdded = Integer.parseInt(userInput.getText().toString().trim());
-                        ContentValues values = new ContentValues();
-                        values.put(ItemEntry.COLUMN_ITEM_STOCK, currentStock + quantityAdded);
-                        Uri currentItemUri = Uri.withAppendedPath(ItemEntry.CONTENT_URI, "" + listItemView.addButton.getTag().toString());
-                        int rowsAffected = context.getContentResolver().update(currentItemUri, values, null, null);
-                        if (rowsAffected == 0) {
-                            Toast.makeText(context, context.getString(R.string.failed_order), Toast.LENGTH_SHORT).show();
+                        String quantityString = userInput.getText().toString().trim();
+                        if (quantityString.isEmpty() || quantityString == "" || quantityString.length() == 0 || quantityString == null) {
+                            return;
                         } else {
-                            Toast.makeText(context, context.getString(R.string.success_order), Toast.LENGTH_SHORT).show();
+                            Integer quantityAdded = Integer.parseInt(quantityString);
+                            ContentValues values = new ContentValues();
+                            values.put(ItemEntry.COLUMN_ITEM_STOCK, currentStock + quantityAdded);
+                            Uri currentItemUri = Uri.withAppendedPath(ItemEntry.CONTENT_URI, "" + listItemView.addButton.getTag().toString());
+                            int rowsAffected = context.getContentResolver().update(currentItemUri, values, null, null);
+                            if (rowsAffected == 0) {
+                                Toast.makeText(context, context.getString(R.string.failed_order), Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(context, context.getString(R.string.success_order), Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }
                 });

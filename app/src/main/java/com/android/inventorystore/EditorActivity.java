@@ -41,6 +41,11 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     TextView sellButton;
     @BindView(R.id.add_button_editor)
     TextView addButton;
+    @BindView(R.id.buttonPanel)
+    View buttonPanel;
+    @BindView(R.id.stockPanel)
+    View stockPanel;
+
     Uri mCurrentItemUri;
     private boolean hasItemChanged = false;
     private int currentStock;
@@ -68,6 +73,8 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             setTitle(getString(R.string.add_item));
         } else {
             setTitle(getString(R.string.edit_item));
+            stockPanel.setVisibility(View.VISIBLE);
+            buttonPanel.setVisibility(View.VISIBLE);
             getLoaderManager().initLoader(EXISTING_PET_LOADER, null, this);
         }
 
@@ -92,14 +99,19 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 alertDialogBuilder.setCancelable(false).setPositiveButton(context.getText(R.string.order_string), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Integer quantityAdded = Integer.parseInt(userInput.getText().toString().trim());
-                        ContentValues values = new ContentValues();
-                        values.put(ItemEntry.COLUMN_ITEM_STOCK, currentStock + quantityAdded);
-                        int rowsAffected = context.getContentResolver().update(mCurrentItemUri, values, null, null);
-                        if (rowsAffected == 0) {
-                            Toast.makeText(context, context.getString(R.string.failed_order), Toast.LENGTH_SHORT).show();
+                        String quantityString = userInput.getText().toString().trim();
+                        if (quantityString.isEmpty() || quantityString == "" || quantityString.length() == 0 || quantityString == null) {
+                            return;
                         } else {
-                            Toast.makeText(context, context.getString(R.string.success_order), Toast.LENGTH_SHORT).show();
+                            Integer quantityAdded = Integer.parseInt(quantityString);
+                            ContentValues values = new ContentValues();
+                            values.put(ItemEntry.COLUMN_ITEM_STOCK, currentStock + quantityAdded);
+                            int rowsAffected = context.getContentResolver().update(mCurrentItemUri, values, null, null);
+                            if (rowsAffected == 0) {
+                                Toast.makeText(context, context.getString(R.string.failed_order), Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(context, context.getString(R.string.success_order), Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }
                 });
