@@ -84,14 +84,16 @@ public class ItemCursorAdapter extends CursorAdapter {
                             return;
                         } else {
                             Integer quantityAdded = Integer.parseInt(quantityString);
-                            ContentValues values = new ContentValues();
-                            values.put(ItemEntry.COLUMN_ITEM_STOCK, currentStock + quantityAdded);
-                            Uri currentItemUri = Uri.withAppendedPath(ItemEntry.CONTENT_URI, "" + listItemView.addButton.getTag().toString());
-                            int rowsAffected = context.getContentResolver().update(currentItemUri, values, null, null);
-                            if (rowsAffected == 0) {
-                                Toast.makeText(context, context.getString(R.string.failed_order), Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(context, context.getString(R.string.success_order), Toast.LENGTH_SHORT).show();
+                            if (quantityAdded != 0) {
+                                ContentValues values = new ContentValues();
+                                values.put(ItemEntry.COLUMN_ITEM_STOCK, currentStock + quantityAdded);
+                                Uri currentItemUri = Uri.withAppendedPath(ItemEntry.CONTENT_URI, "" + listItemView.addButton.getTag().toString());
+                                int rowsAffected = context.getContentResolver().update(currentItemUri, values, null, null);
+                                if (rowsAffected == 0) {
+                                    Toast.makeText(context, context.getString(R.string.failed_order), Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(context, context.getString(R.string.success_order), Toast.LENGTH_SHORT).show();
+                                }
                             }
                         }
                     }

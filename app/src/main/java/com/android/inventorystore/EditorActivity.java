@@ -104,13 +104,15 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                             return;
                         } else {
                             Integer quantityAdded = Integer.parseInt(quantityString);
-                            ContentValues values = new ContentValues();
-                            values.put(ItemEntry.COLUMN_ITEM_STOCK, currentStock + quantityAdded);
-                            int rowsAffected = context.getContentResolver().update(mCurrentItemUri, values, null, null);
-                            if (rowsAffected == 0) {
-                                Toast.makeText(context, context.getString(R.string.failed_order), Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(context, context.getString(R.string.success_order), Toast.LENGTH_SHORT).show();
+                            if (quantityAdded != 0) {
+                                ContentValues values = new ContentValues();
+                                values.put(ItemEntry.COLUMN_ITEM_STOCK, currentStock + quantityAdded);
+                                int rowsAffected = context.getContentResolver().update(mCurrentItemUri, values, null, null);
+                                if (rowsAffected == 0) {
+                                    Toast.makeText(context, context.getString(R.string.failed_order), Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(context, context.getString(R.string.success_order), Toast.LENGTH_SHORT).show();
+                                }
                             }
                         }
                     }
