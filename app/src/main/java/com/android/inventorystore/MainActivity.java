@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     ListView listView;
     @BindView(R.id.empty_view)
     View emptyView;
+
     private ItemCursorAdapter mCursorAdapter;
 
     @Override

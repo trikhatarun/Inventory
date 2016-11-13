@@ -38,5 +38,8 @@ public class ItemContract {
 
         //Stock of the item
         public final static String COLUMN_ITEM_STOCK = "stock";
+
+        //uri of the item
+        public final static String COLUMN_ITEM_IMAGE = "image";
     }
 }

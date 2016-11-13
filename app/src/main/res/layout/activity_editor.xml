@@ -72,7 +72,7 @@
         android:id="@+id/stockPanel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="35dp"
+        android:layout_marginBottom="18dp"
         android:orientation="horizontal"
         android:visibility="gone">
 
@@ -92,10 +92,19 @@
             android:textColor="@color/textPrimary" />
     </LinearLayout>
 
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/ic_insert_photo" />
+
     <LinearLayout
         android:id="@+id/buttonPanel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
         android:visibility="gone">
 
         <Button
@@ -116,4 +125,18 @@
             android:textColor="@color/colorAccent" />
 
     </LinearLayout>
+
+    <Button
+        android:id="@+id/order_supplier"
+        style="@style/Base.Widget.AppCompat.Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@color/button_order"
+        android:paddingBottom="8dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="8dp"
+        android:text="@string/place_order"
+        android:visibility="gone" />
 </LinearLayout>

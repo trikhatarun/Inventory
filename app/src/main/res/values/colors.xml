@@ -8,4 +8,5 @@
     <color name="empty_stock">#a2ec0808</color>
     <color name="stock_less">#b4fa8910</color>
     <color name="background">#d7d0d0</color>
+    <color name="button_order">#FB8C00</color>
 </resources>

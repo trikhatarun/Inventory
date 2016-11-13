@@ -38,4 +38,5 @@
     <string name="sold_success">Item Sold</string>
     <string name="sold_failed">Item selling failed</string>
     <string name="out_of_stock">Stock finished, Order more stock</string>
+    <string name="place_order">Place Order</string>
 </resources>
